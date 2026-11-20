@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Лабораторна робота № 5–6</title>
+</head>
+<body>
+    <p>
+        <a href="1.txt">мови</a>
+        <a href="2.txt">студенти</a>
+    </p>
+    <div id="list" style="background-color: yellow" aria-live="polite">&nbsp;</div>
+
+    <p><button type="button" id="weather-button">Показати погоду в Лондоні</button></p>
+    <div id="weather" aria-live="polite"></div>
+
+    <script>
+        async function showList(event) {
+            event.preventDefault();
+            const file = event.currentTarget.href;
+            const list = document.createElement("ul");
+            document.getElementById("list").replaceChildren(list);
+
+            try {
+                const response = await fetch(file);
+                if (!response.ok) throw new Error();
+                const items = await response.json();
+
+                for (const item of items) {
+                    const li = document.createElement("li");
+                    li.textContent = item;
+                    list.append(li);
+                }
+            } catch {
+                list.replaceWith("Не вдалося завантажити список.");
+            }
+        }
+
+        for (const link of document.querySelectorAll("a")) {
+            link.addEventListener("click", showList);
+        }
+    </script>
+    <script src="weather.js"></script>
+</body>
+</html>
